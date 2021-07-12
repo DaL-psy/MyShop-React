@@ -111,9 +111,13 @@ header {
   padding: 30px;
   display: flex;
   flex-direction: column;
+
   .items {
     flex: 1;
+    overflow: auto;
+    margin-bottom: 40px;
   }
+
   h2 {
     margin: 0;
     font-size: 24px;
