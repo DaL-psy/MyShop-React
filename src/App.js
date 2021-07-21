@@ -43,13 +43,13 @@ function App() {
   };
 
   const onAddToFavorite = async (obj) => {
-    if (favorites.find((favObj) => (favObj.id = obj.id))) {
+    if (favorites.find((favObj) => favObj.id === obj.id)) {
       axios.delete(
         `https://60f1540b38ecdf0017b0fba7.mockapi.io/favorites/${obj.id}`
       );
     } else {
       const { data } = await axios.post(
-        "https://60f1540b38ecdf0017b0fba7.mockapi.io/favorites",
+        `https://60f1540b38ecdf0017b0fba7.mockapi.io/favorites`,
         obj
       );
       setFavorites((prev) => [...prev, data]);
