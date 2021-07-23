@@ -1,11 +1,13 @@
 import React from "react";
-import axios from "axios";
 import { Route } from "react-router-dom";
+import axios from "axios";
 import Header from "./components/Header";
 import Drawer from "./components/Drawer";
+import AppContext from "./context";
+
 import Home from "./pages/Home";
 import Favorites from "./pages/Favorites";
-import AppContext from "./context";
+import Orders from "./pages/Orders";
 
 function App() {
   const [items, setItems] = React.useState([]);
@@ -20,17 +22,14 @@ function App() {
       const cartResponse = await axios.get(
         "https://60f1540b38ecdf0017b0fba7.mockapi.io/cart"
       );
-
       const favoritesResponse = await axios.get(
         "https://60f1540b38ecdf0017b0fba7.mockapi.io/favorites"
       );
-
       const itemsResponse = await axios.get(
         "https://60f1540b38ecdf0017b0fba7.mockapi.io/items"
       );
 
       setIsLoading(false);
-
       setCartItems(cartResponse.data);
       setFavorites(favoritesResponse.data);
       setItems(itemsResponse.data);
@@ -40,6 +39,8 @@ function App() {
   }, []);
 
   const onAddToCart = (obj) => {
+    console.log(obj);
+
     if (cartItems.find((item) => Number(item.id) === Number(obj.id))) {
       axios.delete(
         `https://60f1540b38ecdf0017b0fba7.mockapi.io/cart/${obj.id}`
@@ -48,7 +49,7 @@ function App() {
         prev.filter((item) => Number(item.id) !== Number(obj.id))
       );
     } else {
-      axios.post(`https://60f1540b38ecdf0017b0fba7.mockapi.io/cart`, obj);
+      axios.post("https://60f1540b38ecdf0017b0fba7.mockapi.io/cart", obj);
       setCartItems((prev) => [...prev, obj]);
     }
   };
@@ -69,7 +70,7 @@ function App() {
         );
       } else {
         const { data } = await axios.post(
-          `https://60f1540b38ecdf0017b0fba7.mockapi.io/favorites`,
+          "https://60f1540b38ecdf0017b0fba7.mockapi.io/favorites",
           obj
         );
         setFavorites((prev) => [...prev, data]);
@@ -89,7 +90,16 @@ function App() {
 
   return (
     <AppContext.Provider
-      value={{ items, cartItems, favorites, isItemAdded, onAddToFavorite }}
+      value={{
+        items,
+        cartItems,
+        favorites,
+        isItemAdded,
+        onAddToFavorite,
+        setCartOpened,
+        setCartItems,
+        onAddToCart,
+      }}
     >
       <div className="wrapper clear">
         {cartOpened && (
@@ -99,22 +109,29 @@ function App() {
             onRemove={onRemoveItem}
           />
         )}
+
         <Header onClickCart={() => setCartOpened(true)} />
+
         <Route path="/" exact>
           <Home
             items={items}
+            cartItems={cartItems}
             searchValue={searchValue}
             setSearchValue={setSearchValue}
             onChangeSearchInput={onChangeSearchInput}
+            s
             onAddToFavorite={onAddToFavorite}
             onAddToCart={onAddToCart}
-            cartItems={cartItems}
             isLoading={isLoading}
           />
         </Route>
 
         <Route path="/favorites" exact>
           <Favorites />
+        </Route>
+
+        <Route path="/orders" exact>
+          <Orders />
         </Route>
       </div>
     </AppContext.Provider>
