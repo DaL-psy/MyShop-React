@@ -1,10 +1,8 @@
 import React from "react";
 import Card from "../components/Card";
 import axios from "axios";
-import AppContext from "../context";
 
 function Orders() {
-  const { onAddToFavorite, onAddToCart } = React.useContext(AppContext);
   const [orders, setOrders] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   React.useEffect(() => {
@@ -30,13 +28,7 @@ function Orders() {
 
       <div className="d-flex flex-wrap">
         {(isLoading ? [...Array(8)] : orders).map((item, index) => (
-          <Card
-            key={index}
-            onFavorite={(obj) => onAddToFavorite(obj)}
-            onPlus={(obj) => onAddToCart(obj)}
-            loading={isLoading}
-            {...item}
-          />
+          <Card key={index} loading={isLoading} {...item} />
         ))}
       </div>
     </div>
